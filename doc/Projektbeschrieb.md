@@ -27,4 +27,4 @@ Das Thema, für das ich mich entschieden, habe ist ein Auto-Auktionshaus. In der
 
 ### Welche Technologien werden eingesetzt?
 
-Für das Projekt habe ich mich entschieden [Java](https://www.java.com/) als Programmiersprachen zu benutzen. Für die Verbindung mit der Datenbank möchte ich das Framework [Spring](https://spring.io) verwenden. Ich möchte auch ein Caching-System einsetzen. Für das werde ich [Redis](https://redis.io) verwenden.
+Für das Projekt habe ich mich entschieden [Java](https://www.java.com/) als Programmiersprachen zu benutzen. Für die Verbindung mit der Datenbank möchte ich das Framework [Spring](https://spring.io) verwenden. Ich möchte auch ein Caching-System einsetzen. Für das werde ich [Redis](https://redis.io) verwenden. Die Datenban die ich verwenden will habe ich mich für eine Postgres Datenbank entschieden. Die Datenbank und Redis wird in einem Docker-Container laufen.
