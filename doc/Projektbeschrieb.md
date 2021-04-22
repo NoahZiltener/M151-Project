@@ -5,11 +5,11 @@ Das Thema, für das ich mich entschieden, habe ist ein Auto-Auktionshaus. In der
 
 ### Wer sind die Personengruppe?
 
-| Rollen Name | Beschreibung  |
-| -----|:-------------:|
-| Auktions-Admin | Der Aktions-Admin kann alle Auktionen verwalten und kann die Ablaufzeit einer Auktion verlängern |
-| Auktionator | Der Auktionator möchte ein Auto auf der Auktionsplattform anbieten können. Er möchte einen Start und einen Direktkaufpreis festlegen können.|
-| Käufer | Der Käufer möchte alle Auktionen ansehen können. Wenn er ein Auto gefunden hat, für das er sich interessiert, kann er ein Gebot platzieren oder es direkt  kaufen. |
+| Bild | Name | Gruppe | Beschreibung |
+| ----- | ----- | ----- |:-------------:|
+| ![image](https://user-images.githubusercontent.com/24568118/115667298-f5646380-a345-11eb-86ce-2bcc0d8fcd4d.png)| Charles | Auktions-Admin | Der Aktions-Admin kann alle Auktionen verwalten und kann die Ablaufzeit einer Auktion verlängern |
+| ![image2](https://user-images.githubusercontent.com/24568118/115667668-64da5300-a346-11eb-8118-b6014306d5f0.png) | Eric | Auktionator | Der Auktionator möchte ein Auto auf der Auktionsplattform anbieten können. Er möchte einen Start und einen Direktkaufpreis festlegen können.|
+| ![image3](https://user-images.githubusercontent.com/24568118/115667684-69067080-a346-11eb-861a-3c9f26740d8b.png) | Ali | Käufer | Der Käufer möchte alle Auktionen ansehen können. Wenn er ein Auto gefunden hat, für das er sich interessiert, kann er ein Gebot platzieren oder es direkt  kaufen. |
 
 ### Wie soll die Applikation von diesen Nutzern genutzt werden?
 
