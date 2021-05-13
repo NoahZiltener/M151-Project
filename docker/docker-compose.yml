@@ -6,7 +6,7 @@ services:
     image: dpage/pgadmin4:5.2
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@admin.ch
-      - PGADMIN_DEFAULT_PASSWORD=secret
+      - PGADMIN_DEFAULT_PASSWORD=secret12345
     ports:
       - 5050:80
     networks:
@@ -22,7 +22,7 @@ services:
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=secret
-      - POSTGRES_DB=m151-auctionhouse
+      - POSTGRES_DB=auctionhouse
     ports:
       - 5432:5432
     networks:

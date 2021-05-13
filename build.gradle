@@ -2,6 +2,8 @@ plugins {
 	id 'org.springframework.boot' version '2.4.5'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'org.liquibase.gradle' version '2.0.3'
+	id 'org.flywaydb.flyway' version '7.6.0'
 }
 
 group = 'ch.bbzw'
@@ -24,6 +26,17 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 }
 
+def db_url = 'jdbc:postgresql://localhost:5432/auctionhouse'
+def db_user = 'admin'
+def db_password = 'secret'
+
+flyway {
+	url = db_url
+	user = db_user
+	password = db_password
+}
+
 test {
 	useJUnitPlatform()
 }
+
