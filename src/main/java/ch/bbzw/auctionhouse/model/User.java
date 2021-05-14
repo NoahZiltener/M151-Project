@@ -34,9 +34,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserGroup userGroup;
 
-    //@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    //private Set<Auction> auctions;
-
     protected User() {
     }
 

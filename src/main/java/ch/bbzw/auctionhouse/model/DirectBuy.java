@@ -15,4 +15,24 @@ public class DirectBuy {
 
     @ManyToOne
     private User buyer;
+
+    protected DirectBuy() {
+    }
+
+    public DirectBuy(final float buyPrice, final User buyer) {
+        this.buyPrice = buyPrice;
+        this.buyer = buyer;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public float getBuyPrice() {
+        return buyPrice;
+    }
+
+    public User getBuyer() {
+        return buyer;
+    }
 }
