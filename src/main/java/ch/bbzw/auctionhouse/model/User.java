@@ -62,11 +62,23 @@ public class User {
         return lastname;
     }
 
-    public String getPassword() {
-        return password;
+    public void setUserGroup(UserGroup userGroup) {
+        this.userGroup = userGroup;
     }
 
     public UserGroup getUserGroup() {
         return userGroup;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 }
