@@ -13,9 +13,9 @@ Das Thema, für das ich mich entschieden, habe ist ein Auto-Auktionshaus. In der
 
 ### Wie soll die Applikation von diesen Nutzern genutzt werden?
 
-| ID | User-Story  |
-| -----|:-------------:|
-| US01 | Als Käufer möchte ich alle Auto Auktionen sehen, um einen guten Überblick auf die Auktion zu bekommen. |
+| ID | User-Story  | Status |
+| -----|:-------------:| ---|
+| US01 | Als Käufer möchte ich alle Auto Auktionen sehen, um einen guten Überblick auf die Auktion zu bekommen. | 
 | US02 | Als Käufer möchte ich Details einer Auktion sehen, um mich über die Auktion zu informieren. |
 | US03 | Als Käufer möchte ich auf eine Auktion ein Gebot setzten können, um das höchste gebot zu haben. |
 | US04 | Als Käufer möchte ich ein Auto für den Direktkaufpreis kaufen, um die Auktion sofort zu Gewinnen. |
@@ -23,7 +23,7 @@ Das Thema, für das ich mich entschieden, habe ist ein Auto-Auktionshaus. In der
 | US06 | Als Auktionator möchte ich alle meine Auktionen sehen, um mich über meine Auktionen zu informieren. |
 | US07 | Als Auktionator möchte ich alle meine Auktionen sehen, um mich über meine Auktionen zu informieren. |
 | US08 | Als Auktions-Admin möchte ich Auktionen bearbeiten können, um falsche Angaben zu korrigieren. |
-| US09 | Als Auktions-Admin möchte ich neue Käufer und Auktionator erfassen können, damit des Auktionshauses grösser wird. |
+| US09 | Als Auktions-Admin möchte ich neue Käufer und Auktionator erfassen können, damit des Auktionshauses grösser wird. |✅|
 
 ### Welche Technologien werden eingesetzt?
 
