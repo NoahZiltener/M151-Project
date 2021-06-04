@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/auction/bid/")
 @PreAuthorize("hasAuthority('PURCHASER') or hasAuthority('ADMIN') or hasAuthority('AUCTIONEER')")
@@ -24,4 +26,8 @@ public class BidController {
     public Bid add(@RequestBody final Bid bid, @PathVariable final long id) {
         return bidService.add(bid, id);
     }
+
+    @GetMapping("/")
+    public List<Bid> getAll() {
+        return bidService.getAll(); }
 }

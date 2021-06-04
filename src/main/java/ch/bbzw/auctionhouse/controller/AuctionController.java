@@ -1,5 +1,6 @@
 package ch.bbzw.auctionhouse.controller;
 
+import ch.bbzw.auctionhouse.dto.AuctionWithBids;
 import ch.bbzw.auctionhouse.dto.AuctionWithPriceAndCar;
 import ch.bbzw.auctionhouse.model.Auction;
 import ch.bbzw.auctionhouse.model.User;
@@ -23,8 +24,16 @@ public class AuctionController {
     }
 
     @GetMapping("/")
-    public List<Auction> getAll() {
-        return auctionService.getAll(); }
+    public List<AuctionWithBids> getAllOpen() {
+        return auctionService.getAllOpen(); }
+
+    @GetMapping("/myAuctions")
+    public List<Auction> getMyAuction() {
+        return auctionService.getMyAuctions(); }
+
+    @GetMapping("/history")
+    public List<Auction> getAllClosed() {
+        return auctionService.getAllClosed(); }
 
     @PostMapping("/")
     @PreAuthorize("hasAuthority('AUCTIONEER')")

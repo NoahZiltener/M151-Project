@@ -1,14 +1,9 @@
 package ch.bbzw.auctionhouse.service;
 
+import ch.bbzw.auctionhouse.dto.AuctionWithBids;
 import ch.bbzw.auctionhouse.dto.AuctionWithPriceAndCar;
-import ch.bbzw.auctionhouse.model.Auction;
-import ch.bbzw.auctionhouse.model.Car;
-import ch.bbzw.auctionhouse.model.Price;
-import ch.bbzw.auctionhouse.model.User;
-import ch.bbzw.auctionhouse.repo.AuctionRepo;
-import ch.bbzw.auctionhouse.repo.CarRepo;
-import ch.bbzw.auctionhouse.repo.PriceRepo;
-import ch.bbzw.auctionhouse.repo.UserRepo;
+import ch.bbzw.auctionhouse.model.*;
+import ch.bbzw.auctionhouse.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,14 +24,17 @@ public class AuctionService {
     private final CarRepo carRepo;
     private final PriceRepo priceRepo;
     private final UserService userService;
+    private final BidRepo bidRepo;
+
 
     @Autowired
-    public AuctionService(final AuctionRepo auctionRepo, final UserRepo userRepo, final CarRepo carRepo, final PriceRepo priceRepo, final UserService userService) {
+    public AuctionService(final AuctionRepo auctionRepo, final UserRepo userRepo, final CarRepo carRepo, final PriceRepo priceRepo, final UserService userService, final BidRepo bidRepo) {
         this.auctionRepo = auctionRepo;
         this.userRepo = userRepo;
         this.carRepo = carRepo;
         this.priceRepo = priceRepo;
         this.userService = userService;
+        this.bidRepo = bidRepo;
     }
 
     @Transactional
@@ -59,8 +58,31 @@ public class AuctionService {
     }
 
     @Transactional(readOnly = true)
-    public List<Auction> getAll() {
-        final Iterable<Auction> auctions = auctionRepo.findAll();
+    public List<AuctionWithBids> getAllOpen() {
+        final Iterable<Auction> auctions = auctionRepo.getOpenAuctions();
+        List<AuctionWithBids> auctionsWithBids = new ArrayList<>();
+        for (Auction auction: auctions) {
+            final List<Bid> bids = bidRepo.findByAuction(auction);
+            AuctionWithBids auctionWithBids = new AuctionWithBids(auction, bids);
+            auctionsWithBids.add(auctionWithBids);
+        }
+        return StreamSupport
+                .stream(auctionsWithBids.spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Auction> getAllClosed() {
+        final Iterable<Auction> auctions = auctionRepo.getClosedAuctions();
+        return StreamSupport
+                .stream(auctions.spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Auction> getMyAuctions() {
+        final User auctioneer = userService.getCurrentUser().get();
+        final Iterable<Auction> auctions = auctionRepo.findByAuctioneer(auctioneer);
         return StreamSupport
                 .stream(auctions.spliterator(), false)
                 .collect(Collectors.toList());

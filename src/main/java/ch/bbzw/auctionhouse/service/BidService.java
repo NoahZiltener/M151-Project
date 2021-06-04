@@ -10,7 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class BidService {
@@ -41,5 +44,14 @@ public class BidService {
             return bidRepo.save(bid);
         }
         return null;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Bid> getAll() {
+        final User user = userService.getCurrentUser().get();
+        final Iterable<Bid> bids = bidRepo.findByBidder(user);
+        return StreamSupport
+                .stream(bids.spliterator(), false)
+                .collect(Collectors.toList());
     }
 }
