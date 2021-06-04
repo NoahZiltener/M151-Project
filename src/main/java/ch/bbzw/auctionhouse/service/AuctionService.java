@@ -1,6 +1,7 @@
 package ch.bbzw.auctionhouse.service;
 
 import ch.bbzw.auctionhouse.dto.AuctionWithBids;
+import ch.bbzw.auctionhouse.dto.AuctionWithHighestBid;
 import ch.bbzw.auctionhouse.dto.AuctionWithPriceAndCar;
 import ch.bbzw.auctionhouse.model.*;
 import ch.bbzw.auctionhouse.repo.*;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,16 +60,23 @@ public class AuctionService {
     }
 
     @Transactional(readOnly = true)
-    public List<AuctionWithBids> getAllOpen() {
+    public List<AuctionWithHighestBid> getAllOpen() {
         final Iterable<Auction> auctions = auctionRepo.getOpenAuctions();
-        List<AuctionWithBids> auctionsWithBids = new ArrayList<>();
+        List<AuctionWithHighestBid> auctionsWithHighestBid = new ArrayList<>();
         for (Auction auction: auctions) {
             final List<Bid> bids = bidRepo.findByAuction(auction);
-            AuctionWithBids auctionWithBids = new AuctionWithBids(auction, bids);
-            auctionsWithBids.add(auctionWithBids);
+            final Optional<Bid> highestBid = getHighestBid(bids);
+            AuctionWithHighestBid auctionWithBid;
+            if(highestBid.isPresent()){
+                auctionWithBid = new AuctionWithHighestBid(auction,highestBid.get());
+            }
+            else {
+                auctionWithBid = new AuctionWithHighestBid(auction, null);
+            }
+            auctionsWithHighestBid.add(auctionWithBid);
         }
         return StreamSupport
-                .stream(auctionsWithBids.spliterator(), false)
+                .stream(auctionsWithHighestBid.spliterator(), false)
                 .collect(Collectors.toList());
     }
 
@@ -88,5 +97,8 @@ public class AuctionService {
                 .collect(Collectors.toList());
     }
 
-
+    public Optional<Bid> getHighestBid(List<Bid> bids) {
+        return bids.stream()
+                .max(Comparator.comparing(Bid::getBid));
+    }
 }

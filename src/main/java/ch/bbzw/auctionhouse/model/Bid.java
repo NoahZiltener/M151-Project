@@ -1,9 +1,11 @@
 package ch.bbzw.auctionhouse.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class Bid {
+public class Bid implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bid_sequence")

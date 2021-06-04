@@ -1,6 +1,7 @@
 package ch.bbzw.auctionhouse.controller;
 
 import ch.bbzw.auctionhouse.dto.AuctionWithBids;
+import ch.bbzw.auctionhouse.dto.AuctionWithHighestBid;
 import ch.bbzw.auctionhouse.dto.AuctionWithPriceAndCar;
 import ch.bbzw.auctionhouse.model.Auction;
 import ch.bbzw.auctionhouse.model.User;
@@ -24,7 +25,7 @@ public class AuctionController {
     }
 
     @GetMapping("/")
-    public List<AuctionWithBids> getAllOpen() {
+    public List<AuctionWithHighestBid> getAllOpen() {
         return auctionService.getAllOpen(); }
 
     @GetMapping("/myAuctions")

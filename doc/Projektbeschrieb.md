@@ -20,7 +20,7 @@ Das Thema, für das ich mich entschieden, habe ist ein Auto-Auktionshaus. In der
 | US03 | Als Käufer möchte ich auf eine Auktion ein Gebot setzten können, um das höchste gebot zu haben. |
 | US04 | Als Käufer möchte ich ein Auto für den Direktkaufpreis kaufen, um die Auktion sofort zu Gewinnen. |
 | US05 | Als Auktionator möchte ich eine Auktion erstellen, um ein Auto zu verkaufen. |✅|
-| US06 | Als Auktionator möchte ich alle meine Auktionen sehen, um mich über meine Auktionen zu informieren. |
+| US06 | Als Auktionator möchte ich alle meine Auktionen sehen, um mich über meine Auktionen zu informieren. |✅|
 | US07 | Als Auktions-Admin möchte ich Auktionen bearbeiten können, um falsche Angaben zu korrigieren. |
 | US08 | Als Auktions-Admin möchte ich neue Käufer und Auktionator erfassen können, damit des Auktionshauses grösser wird. |✅|
 
