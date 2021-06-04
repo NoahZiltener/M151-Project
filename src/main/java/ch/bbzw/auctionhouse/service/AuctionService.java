@@ -27,19 +27,20 @@ public class AuctionService {
     private final UserRepo userRepo;
     private final CarRepo carRepo;
     private final PriceRepo priceRepo;
+    private final UserService userService;
 
     @Autowired
-    public AuctionService(final AuctionRepo auctionRepo, final UserRepo userRepo, final CarRepo carRepo, final PriceRepo priceRepo) {
+    public AuctionService(final AuctionRepo auctionRepo, final UserRepo userRepo, final CarRepo carRepo, final PriceRepo priceRepo, final UserService userService) {
         this.auctionRepo = auctionRepo;
         this.userRepo = userRepo;
         this.carRepo = carRepo;
         this.priceRepo = priceRepo;
+        this.userService = userService;
     }
 
     @Transactional
     public Auction add(final AuctionWithPriceAndCar auctionWithPriceAndCar) {
-        final SecurityContext context = SecurityContextHolder.getContext();
-        final Optional<User> optionalUser = userRepo.findByUsername(context.getAuthentication().getName());
+        final Optional<User> optionalUser = userService.getCurrentUser();
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             Car car = carRepo.save(auctionWithPriceAndCar.getCar());

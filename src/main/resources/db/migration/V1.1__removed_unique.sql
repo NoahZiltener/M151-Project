@@ -1,0 +1,1 @@
+ALTER TABLE public.auction DROP CONSTRAINT uk_s4wqbb0jmi18ypow9cgf15sj7;

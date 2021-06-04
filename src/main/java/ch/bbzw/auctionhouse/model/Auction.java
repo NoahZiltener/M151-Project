@@ -21,16 +21,40 @@ public class Auction {
     @ManyToOne
     private User auctioneer;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private DirectBuy directBuy;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private boolean closed;
 
     @Column(nullable = false)
     private LocalDateTime auctionTime;
 
     protected Auction() {
+    }
+
+    public void setPrice(Price price) {
+        this.price = price;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
+
+    public void setAuctioneer(User auctioneer) {
+        this.auctioneer = auctioneer;
+    }
+
+    public void setDirectBuy(DirectBuy directBuy) {
+        this.directBuy = directBuy;
+    }
+
+    public void setClosed(boolean closed) {
+        this.closed = closed;
+    }
+
+    public void setAuctionTime(LocalDateTime auctionTime) {
+        this.auctionTime = auctionTime;
     }
 
     public Auction(final Price price, final Car car, final User auctioneer, final DirectBuy directBuy, final boolean closed, final LocalDateTime auctionTime) {

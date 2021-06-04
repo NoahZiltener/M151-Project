@@ -7,6 +7,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,5 +56,12 @@ public class UserService {
             return Optional.of(userRepo.save(foundUser));
         }
         return Optional.empty();
+    }
+
+    @Transactional
+    public Optional<User> getCurrentUser(){
+        final SecurityContext context = SecurityContextHolder.getContext();
+        final Optional<User> optionalUser = userRepo.findByUsername(context.getAuthentication().getName());
+        return optionalUser;
     }
 }

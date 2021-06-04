@@ -24,6 +24,14 @@ public class DirectBuy {
         this.buyer = buyer;
     }
 
+    public void setBuyPrice(float buyPrice) {
+        this.buyPrice = buyPrice;
+    }
+
+    public void setBuyer(User buyer) {
+        this.buyer = buyer;
+    }
+
     public long getId() {
         return id;
     }

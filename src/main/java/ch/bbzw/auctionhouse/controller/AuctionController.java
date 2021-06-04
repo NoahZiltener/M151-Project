@@ -31,4 +31,10 @@ public class AuctionController {
     public Auction add(@RequestBody final AuctionWithPriceAndCar auctionWithPriceAndCar) {
         return auctionService.add(auctionWithPriceAndCar);
     }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void delete(@PathVariable final long id) {
+        auctionService.delete(id);
+    }
 }

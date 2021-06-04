@@ -29,6 +29,18 @@ public class Bid {
         this.auction = auction;
     }
 
+    public void setBid(float bid) {
+        this.bid = bid;
+    }
+
+    public void setBidder(User bidder) {
+        this.bidder = bidder;
+    }
+
+    public void setAuction(Auction auction) {
+        this.auction = auction;
+    }
+
     public long getId() {
         return id;
     }
