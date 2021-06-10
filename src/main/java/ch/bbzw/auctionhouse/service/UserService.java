@@ -33,12 +33,17 @@ public class UserService {
 
     @Transactional
     public void delete(final long id) {
-        userRepo.deleteById(id);
+        final Optional<User> optionalUser = userRepo.findById(id);
+        if (optionalUser.isPresent()) {
+            User foundUser = optionalUser.get();
+            foundUser.setDeleted(true);
+            Optional.of(userRepo.save(foundUser));
+        }
     }
 
     @Transactional(readOnly = true)
     public List<User> getAll() {
-        final Iterable<User> users = userRepo.findAll();
+        final Iterable<User> users = userRepo.getallNotDeletedUser();
         return StreamSupport
                 .stream(users.spliterator(), false)
                 .collect(Collectors.toList());

@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "auctionhouse_user")
-@NamedQuery(name = "User.checkPassword", query = "SELECT u FROM User u WHERE u.username = :username and password = public.crypt(text(:password), text(password))")
+@NamedQuery(name = "User.checkPassword", query = "SELECT u FROM User u WHERE u.username = :username and password = public.crypt(text(:password), text(password)) and deleted = false")
 public class User {
 
     @Id
@@ -26,8 +26,19 @@ public class User {
     @Column(nullable = false)
     private String lastname;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false)
+    private boolean deleted;
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Column(nullable = false, updatable = false)
     @ColumnTransformer(write = "crypt(?, gen_salt('bf', 8))")
     private  String password;
 
