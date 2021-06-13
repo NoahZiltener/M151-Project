@@ -28,6 +28,10 @@ public class AuctionController {
     public List<AuctionWithHighestBid> getAllOpen() {
         return auctionService.getAllOpen(); }
 
+    /*@GetMapping("/{id}")
+    public AuctionWithBids getAuction() {
+        return auctionService.(); }*/
+
     @GetMapping("/myAuctions")
     public List<Auction> getMyAuction() {
         return auctionService.getMyAuctions(); }
@@ -37,7 +41,7 @@ public class AuctionController {
         return auctionService.getAllClosed(); }
 
     @PostMapping("/")
-    @PreAuthorize("hasAuthority('AUCTIONEER')")
+    @PreAuthorize("hasAuthority('AUCTIONEER') or hasAuthority('ADMIN')")
     public Auction add(@RequestBody final AuctionWithPriceAndCar auctionWithPriceAndCar) {
         return auctionService.add(auctionWithPriceAndCar);
     }

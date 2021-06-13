@@ -1,15 +1,13 @@
 package ch.bbzw.auctionhouse.service;
 
-import ch.bbzw.auctionhouse.dto.AuctionWithPriceAndCar;
-import ch.bbzw.auctionhouse.model.*;
+import ch.bbzw.auctionhouse.model.Auction;
+import ch.bbzw.auctionhouse.model.Bid;
+import ch.bbzw.auctionhouse.model.User;
 import ch.bbzw.auctionhouse.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

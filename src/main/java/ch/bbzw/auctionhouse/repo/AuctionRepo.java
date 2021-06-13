@@ -16,5 +16,8 @@ public interface AuctionRepo extends CrudRepository<Auction, Long> {
     @Query("SELECT a FROM Auction a WHERE a.closed = true")
     List<Auction> getClosedAuctions();
 
+    @Query("SELECT a FROM Auction a WHERE a.closed = false AND a.auctionTime < CURRENT_TIMESTAMP")
+    List<Auction> getAllExpiredAuctions();
+
     List<Auction> findByAuctioneer(User auctioneer);
 }

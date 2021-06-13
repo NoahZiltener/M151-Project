@@ -1,13 +1,11 @@
 package ch.bbzw.auctionhouse.service;
 
-import ch.bbzw.auctionhouse.dto.AuctionWithBids;
 import ch.bbzw.auctionhouse.dto.AuctionWithHighestBid;
 import ch.bbzw.auctionhouse.dto.AuctionWithPriceAndCar;
 import ch.bbzw.auctionhouse.model.*;
 import ch.bbzw.auctionhouse.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +45,7 @@ public class AuctionService {
             Car car = carRepo.save(auctionWithPriceAndCar.getCar());
             Price price = priceRepo.save(auctionWithPriceAndCar.getPrice());
 
-            Auction auction = new Auction(price, car, user, null, false, LocalDateTime.now());
+            Auction auction = new Auction(price, car, user, null, false, LocalDateTime.now().plusMinutes(1));
 
             return auctionRepo.save(auction);
         }
@@ -95,6 +93,26 @@ public class AuctionService {
         return StreamSupport
                 .stream(auctions.spliterator(), false)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Auction> getAuctionById(final int id) {
+        final User auctioneer = userService.getCurrentUser().get();
+        final Iterable<Auction> auctions = auctionRepo.findByAuctioneer(auctioneer);
+        return StreamSupport
+                .stream(auctions.spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    @Scheduled(fixedRate = 60000)
+    @Transactional
+    public void closeAuctions(){
+        final List<Auction> auctions = auctionRepo.getAllExpiredAuctions();
+        final List<Auction> closedAuctions = auctions.stream().map(auction -> {
+            auction.setClosed(true);
+            return auction;
+        }).collect(Collectors.toList());
+        auctionRepo.saveAll(closedAuctions);
     }
 
     public Optional<Bid> getHighestBid(List<Bid> bids) {
