@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/auction")
@@ -28,9 +29,9 @@ public class AuctionController {
     public List<AuctionWithHighestBid> getAllOpen() {
         return auctionService.getAllOpen(); }
 
-    /*@GetMapping("/{id}")
-    public AuctionWithBids getAuction() {
-        return auctionService.(); }*/
+    @GetMapping("/{id}")
+    public Optional<Auction> getAuctionById(@PathVariable final long id) {
+        return auctionService.getAuctionById(id); }
 
     @GetMapping("/myAuctions")
     public List<Auction> getMyAuction() {

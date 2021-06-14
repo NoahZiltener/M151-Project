@@ -3,10 +3,6 @@ package ch.bbzw.auctionhouse.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 @Entity
 public class Auction implements Serializable {
@@ -39,6 +35,15 @@ public class Auction implements Serializable {
     protected Auction() {
     }
 
+    public Auction(final Price price, final Car car, final User auctioneer, final DirectBuy directBuy, final boolean closed, final LocalDateTime auctionTime) {
+        this.price = price;
+        this.car = car;
+        this.auctioneer = auctioneer;
+        this.directBuy = directBuy;
+        this.closed = closed;
+        this.auctionTime = auctionTime;
+    }
+
     public void setPrice(Price price) {
         this.price = price;
     }
@@ -60,15 +65,6 @@ public class Auction implements Serializable {
     }
 
     public void setAuctionTime(LocalDateTime auctionTime) {
-        this.auctionTime = auctionTime;
-    }
-
-    public Auction(final Price price, final Car car, final User auctioneer, final DirectBuy directBuy, final boolean closed, final LocalDateTime auctionTime) {
-        this.price = price;
-        this.car = car;
-        this.auctioneer = auctioneer;
-        this.directBuy = directBuy;
-        this.closed = closed;
         this.auctionTime = auctionTime;
     }
 

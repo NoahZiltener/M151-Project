@@ -29,14 +29,6 @@ public class User {
     @Column(nullable = false)
     private boolean deleted;
 
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false, updatable = false)
     @ColumnTransformer(write = "crypt(?, gen_salt('bf', 8))")
@@ -57,6 +49,26 @@ public class User {
         this.userGroup = userGroup;
     }
 
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void setUserGroup(UserGroup userGroup) {
+        this.userGroup = userGroup;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
     public long getId() {
         return id;
     }
@@ -73,23 +85,12 @@ public class User {
         return lastname;
     }
 
-    public void setUserGroup(UserGroup userGroup) {
-        this.userGroup = userGroup;
+    public boolean isDeleted() {
+        return deleted;
     }
 
     public UserGroup getUserGroup() {
         return userGroup;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
 }

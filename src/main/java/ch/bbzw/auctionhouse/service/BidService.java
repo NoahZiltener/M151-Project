@@ -5,6 +5,10 @@ import ch.bbzw.auctionhouse.model.Bid;
 import ch.bbzw.auctionhouse.model.User;
 import ch.bbzw.auctionhouse.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
+@CacheConfig(cacheNames = {"bids"})
 public class BidService {
     private final AuctionRepo auctionRepo;
     private final UserRepo userRepo;
@@ -33,6 +38,8 @@ public class BidService {
     }
 
     @Transactional
+    @CachePut(key = "#bid.id")
+    @CacheEvict(key = "0")
     public Bid add(final Bid bid, final long auctionId) {
         final Optional<Auction> auction = auctionRepo.findById(auctionId);
         if(auction.isPresent()){
@@ -45,6 +52,7 @@ public class BidService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(key = "0")
     public List<Bid> getAll() {
         final User user = userService.getCurrentUser().get();
         final Iterable<Bid> bids = bidRepo.findByBidder(user);

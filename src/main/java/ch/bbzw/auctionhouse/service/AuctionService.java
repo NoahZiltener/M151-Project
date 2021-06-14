@@ -5,6 +5,7 @@ import ch.bbzw.auctionhouse.dto.AuctionWithPriceAndCar;
 import ch.bbzw.auctionhouse.model.*;
 import ch.bbzw.auctionhouse.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
+@CacheConfig(cacheNames = {"auction"})
 public class AuctionService {
     private final AuctionRepo auctionRepo;
     private final UserRepo userRepo;
@@ -38,6 +40,8 @@ public class AuctionService {
     }
 
     @Transactional
+    //@CachePut(key = "#auctionWithPriceAndCar.")
+    //@CacheEvict(key = "0")
     public Auction add(final AuctionWithPriceAndCar auctionWithPriceAndCar) {
         final Optional<User> optionalUser = userService.getCurrentUser();
         if (optionalUser.isPresent()) {
@@ -53,11 +57,13 @@ public class AuctionService {
     }
 
     @Transactional
+    @Caching(evict = {@CacheEvict(key = "#id"), @CacheEvict(key = "0")})
     public void delete(final long id) {
         auctionRepo.deleteById(id);
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(key = "0")
     public List<AuctionWithHighestBid> getAllOpen() {
         final Iterable<Auction> auctions = auctionRepo.getOpenAuctions();
         List<AuctionWithHighestBid> auctionsWithHighestBid = new ArrayList<>();
@@ -96,13 +102,8 @@ public class AuctionService {
     }
 
     @Transactional(readOnly = true)
-    public List<Auction> getAuctionById(final int id) {
-        final User auctioneer = userService.getCurrentUser().get();
-        final Iterable<Auction> auctions = auctionRepo.findByAuctioneer(auctioneer);
-        return StreamSupport
-                .stream(auctions.spliterator(), false)
-                .collect(Collectors.toList());
-    }
+    public Optional<Auction> getAuctionById(final long id) {
+        return auctionRepo.findById(id);    }
 
     @Scheduled(fixedRate = 60000)
     @Transactional

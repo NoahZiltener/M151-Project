@@ -7,12 +7,16 @@ import ch.bbzw.auctionhouse.model.User;
 import ch.bbzw.auctionhouse.repo.AuctionRepo;
 import ch.bbzw.auctionhouse.repo.DirectBuyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@CacheConfig(cacheNames = {"direct"})
 public class DirectBuyService {
     private final DirectBuyRepo directBuyRepo;
     private final AuctionRepo auctionRepo;
@@ -26,6 +30,8 @@ public class DirectBuyService {
     }
 
     @Transactional
+    @CachePut(key = "#directBuy.id")
+    @CacheEvict(key = "0")
     public DirectBuy add(final DirectBuy directBuy, final long auctionId) {
         final Optional<Auction> optionalAuction = auctionRepo.findById(auctionId);
         if(optionalAuction.isPresent()){

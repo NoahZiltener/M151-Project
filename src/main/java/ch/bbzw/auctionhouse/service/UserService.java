@@ -3,6 +3,7 @@ package ch.bbzw.auctionhouse.service;
 import ch.bbzw.auctionhouse.model.User;
 import ch.bbzw.auctionhouse.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.*;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
+@CacheConfig(cacheNames = {"users"})
 public class UserService {
     private final UserRepo userRepo;
 
@@ -23,11 +25,14 @@ public class UserService {
     }
 
     @Transactional
+    @CachePut(key = "#user.id")
+    @CacheEvict(key = "0")
     public User add(final User user) {
         return userRepo.save(user);
     }
 
     @Transactional
+    @Caching(evict = {@CacheEvict(key = "#id"), @CacheEvict(key = "0")})
     public void delete(final long id) {
         final Optional<User> optionalUser = userRepo.findById(id);
         if (optionalUser.isPresent()) {
@@ -38,6 +43,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(key = "0")
     public List<User> getAll() {
         final Iterable<User> users = userRepo.getallNotDeletedUser();
         return StreamSupport
@@ -46,6 +52,7 @@ public class UserService {
     }
 
     @Transactional
+    @Caching(evict = {@CacheEvict(key = "#id"), @CacheEvict(key = "0")})
     public Optional<User> update(final long id, final User user) {
         final Optional<User> optionalUser = userRepo.findById(id);
         if (optionalUser.isPresent()) {
