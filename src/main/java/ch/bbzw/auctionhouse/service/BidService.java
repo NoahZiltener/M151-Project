@@ -41,12 +41,15 @@ public class BidService {
     @CachePut(key = "#bid.id")
     @CacheEvict(key = "0")
     public Bid add(final Bid bid, final long auctionId) {
-        final Optional<Auction> auction = auctionRepo.findById(auctionId);
-        if(auction.isPresent()){
-            final User user = userService.getCurrentUser().get();
-            bid.setAuction(auction.get());
-            bid.setBidder(user);
-            return bidRepo.save(bid);
+        final Optional<Auction> optionalAuction = auctionRepo.findById(auctionId);
+        if (optionalAuction.isPresent()) {
+            final Auction auction = optionalAuction.get();
+            if (!auction.isClosed()) {
+                final User user = userService.getCurrentUser().get();
+                bid.setAuction(auction);
+                bid.setBidder(user);
+                return bidRepo.save(bid);
+            }
         }
         return null;
     }

@@ -22,7 +22,6 @@ import java.util.stream.StreamSupport;
 @CacheConfig(cacheNames = {"auction"})
 public class AuctionService {
     private final AuctionRepo auctionRepo;
-    private final UserRepo userRepo;
     private final CarRepo carRepo;
     private final PriceRepo priceRepo;
     private final UserService userService;
@@ -30,9 +29,8 @@ public class AuctionService {
 
 
     @Autowired
-    public AuctionService(final AuctionRepo auctionRepo, final UserRepo userRepo, final CarRepo carRepo, final PriceRepo priceRepo, final UserService userService, final BidRepo bidRepo) {
+    public AuctionService(final AuctionRepo auctionRepo, final CarRepo carRepo, final PriceRepo priceRepo, final UserService userService, final BidRepo bidRepo) {
         this.auctionRepo = auctionRepo;
-        this.userRepo = userRepo;
         this.carRepo = carRepo;
         this.priceRepo = priceRepo;
         this.userService = userService;
@@ -40,8 +38,8 @@ public class AuctionService {
     }
 
     @Transactional
-    //@CachePut(key = "#auctionWithPriceAndCar.")
-    //@CacheEvict(key = "0")
+    //@CachePut(key = "#auction.")
+    @CacheEvict(key = "0")
     public Auction add(final AuctionWithPriceAndCar auctionWithPriceAndCar) {
         final Optional<User> optionalUser = userService.getCurrentUser();
         if (optionalUser.isPresent()) {

@@ -1,7 +1,6 @@
 package ch.bbzw.auctionhouse.service;
 
 import ch.bbzw.auctionhouse.model.Auction;
-import ch.bbzw.auctionhouse.model.Bid;
 import ch.bbzw.auctionhouse.model.DirectBuy;
 import ch.bbzw.auctionhouse.model.User;
 import ch.bbzw.auctionhouse.repo.AuctionRepo;
@@ -34,15 +33,17 @@ public class DirectBuyService {
     @CacheEvict(key = "0")
     public DirectBuy add(final DirectBuy directBuy, final long auctionId) {
         final Optional<Auction> optionalAuction = auctionRepo.findById(auctionId);
-        if(optionalAuction.isPresent()){
-            final User user = userService.getCurrentUser().get();
+        if (optionalAuction.isPresent()) {
             final Auction auction = optionalAuction.get();
-            directBuy.setBuyer(user);
-            final DirectBuy saveddirectBuy = directBuyRepo.save(directBuy);
-            auction.setDirectBuy(saveddirectBuy);
-            auction.setClosed(true);
-            auctionRepo.save(auction);
-            return saveddirectBuy;
+            if (!auction.isClosed()) {
+                final User user = userService.getCurrentUser().get();
+                directBuy.setBuyer(user);
+                final DirectBuy savedDirectBuy = directBuyRepo.save(directBuy);
+                auction.setDirectBuy(savedDirectBuy);
+                auction.setClosed(true);
+                auctionRepo.save(auction);
+                return savedDirectBuy;
+            }
         }
         return null;
     }

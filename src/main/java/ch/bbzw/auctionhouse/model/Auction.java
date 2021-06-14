@@ -23,6 +23,9 @@ public class Auction implements Serializable {
     @ManyToOne
     private User auctioneer;
 
+    @ManyToOne
+    private User winner;
+
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private DirectBuy directBuy;
 
@@ -66,6 +69,14 @@ public class Auction implements Serializable {
 
     public void setAuctionTime(LocalDateTime auctionTime) {
         this.auctionTime = auctionTime;
+    }
+
+    public void setWinner(User winner) {
+        this.winner = winner;
+    }
+
+    public User getWinner() {
+        return winner;
     }
 
     public long getId() {
