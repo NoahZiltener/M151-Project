@@ -31,16 +31,17 @@ public class DirectBuyService {
     @Transactional
     @CachePut(key = "#directBuy.id")
     @CacheEvict(key = "0")
-    public DirectBuy add(final DirectBuy directBuy, final long auctionId) {
+    public DirectBuy add(final long auctionId) {
         final Optional<Auction> optionalAuction = auctionRepo.findById(auctionId);
         if (optionalAuction.isPresent()) {
             final Auction auction = optionalAuction.get();
             if (!auction.isClosed()) {
                 final User user = userService.getCurrentUser().get();
-                directBuy.setBuyer(user);
+                DirectBuy directBuy = new DirectBuy(user);
                 final DirectBuy savedDirectBuy = directBuyRepo.save(directBuy);
                 auction.setDirectBuy(savedDirectBuy);
                 auction.setClosed(true);
+                auction.setWinner(user);
                 auctionRepo.save(auction);
                 return savedDirectBuy;
             }

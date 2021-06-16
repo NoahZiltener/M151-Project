@@ -20,4 +20,6 @@ public interface AuctionRepo extends CrudRepository<Auction, Long> {
     List<Auction> getAllExpiredAuctions();
 
     List<Auction> findByAuctioneer(User auctioneer);
+
+    List<Auction> findByWinner(User winner);
 }

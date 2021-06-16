@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,7 +46,7 @@ public class AuctionService {
             Car car = carRepo.save(auctionWithPriceAndCar.getCar());
             Price price = priceRepo.save(auctionWithPriceAndCar.getPrice());
 
-            Auction auction = new Auction(price, car, user, null, false, LocalDateTime.now().plusMinutes(1));
+            Auction auction = new Auction(price, car, user, null, false, LocalDateTime.now().plusMinutes(5));
 
             return auctionRepo.save(auction);
         }
@@ -66,8 +65,7 @@ public class AuctionService {
         final Iterable<Auction> auctions = auctionRepo.getOpenAuctions();
         List<AuctionWithHighestBid> auctionsWithHighestBid = new ArrayList<>();
         for (Auction auction: auctions) {
-            final List<Bid> bids = bidRepo.findByAuction(auction);
-            final Optional<Bid> highestBid = getHighestBid(bids);
+            final Optional<Bid> highestBid = getHighestBid(auction);
             AuctionWithHighestBid auctionWithBid;
             if(highestBid.isPresent()){
                 auctionWithBid = new AuctionWithHighestBid(auction,highestBid.get());
@@ -100,6 +98,15 @@ public class AuctionService {
     }
 
     @Transactional(readOnly = true)
+    public List<Auction> getWonAuctions() {
+        final User winner = userService.getCurrentUser().get();
+        final Iterable<Auction> auctions = auctionRepo.findByWinner(winner);
+        return StreamSupport
+                .stream(auctions.spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public Optional<Auction> getAuctionById(final long id) {
         return auctionRepo.findById(id);    }
 
@@ -109,13 +116,17 @@ public class AuctionService {
         final List<Auction> auctions = auctionRepo.getAllExpiredAuctions();
         final List<Auction> closedAuctions = auctions.stream().map(auction -> {
             auction.setClosed(true);
+            Optional<Bid> optionalHighestBid = getHighestBid(auction);
+            if(optionalHighestBid.isPresent()){
+                Bid highestBid = optionalHighestBid.get();
+                auction.setWinner(highestBid.getBidder());
+            }
             return auction;
         }).collect(Collectors.toList());
         auctionRepo.saveAll(closedAuctions);
     }
 
-    public Optional<Bid> getHighestBid(List<Bid> bids) {
-        return bids.stream()
-                .max(Comparator.comparing(Bid::getBid));
+    public Optional<Bid> getHighestBid(Auction auction) {
+        return bidRepo.findFirstByAuctionOrderByBidDesc(auction);
     }
 }

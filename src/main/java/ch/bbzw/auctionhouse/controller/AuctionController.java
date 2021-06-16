@@ -41,6 +41,10 @@ public class AuctionController {
     public List<Auction> getAllClosed() {
         return auctionService.getAllClosed(); }
 
+    @GetMapping("/wonAuctions")
+    public List<Auction> getAllWonAuctions() {
+        return auctionService.getWonAuctions(); }
+
     @PostMapping("/")
     @PreAuthorize("hasAuthority('AUCTIONEER') or hasAuthority('ADMIN')")
     public Auction add(@RequestBody final AuctionWithPriceAndCar auctionWithPriceAndCar) {

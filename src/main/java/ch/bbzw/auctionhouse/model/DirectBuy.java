@@ -10,22 +10,14 @@ public class DirectBuy {
     @Column(nullable = false, updatable = false)
     private long id;
 
-    @Column(nullable = false)
-    private float buyPrice;
-
     @ManyToOne
     private User buyer;
 
     protected DirectBuy() {
     }
 
-    public DirectBuy(final float buyPrice, final User buyer) {
-        this.buyPrice = buyPrice;
+    public DirectBuy(final User buyer) {
         this.buyer = buyer;
-    }
-
-    public void setBuyPrice(float buyPrice) {
-        this.buyPrice = buyPrice;
     }
 
     public void setBuyer(User buyer) {
@@ -34,10 +26,6 @@ public class DirectBuy {
 
     public long getId() {
         return id;
-    }
-
-    public float getBuyPrice() {
-        return buyPrice;
     }
 
     public User getBuyer() {

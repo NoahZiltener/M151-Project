@@ -3,6 +3,7 @@ package ch.bbzw.auctionhouse.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 public class Auction implements Serializable {
@@ -106,4 +107,6 @@ public class Auction implements Serializable {
     public LocalDateTime getAuctionTime() {
         return auctionTime;
     }
+
+
 }

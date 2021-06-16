@@ -45,10 +45,19 @@ public class BidService {
         if (optionalAuction.isPresent()) {
             final Auction auction = optionalAuction.get();
             if (!auction.isClosed()) {
-                final User user = userService.getCurrentUser().get();
-                bid.setAuction(auction);
-                bid.setBidder(user);
-                return bidRepo.save(bid);
+                Optional<Bid> optionalHighestBid = bidRepo.findFirstByAuctionOrderByBidDesc(auction);
+                if(optionalHighestBid.isPresent()){
+                    Bid highestBid = optionalHighestBid.get();
+                    if(highestBid.getBid() > bid.getBid()){
+                        return null;
+                    }
+                }
+                if(auction.getPrice().getStartingBid() <= bid.getBid()){
+                    final User user = userService.getCurrentUser().get();
+                    bid.setAuction(auction);
+                    bid.setBidder(user);
+                    return bidRepo.save(bid);
+                }
             }
         }
         return null;

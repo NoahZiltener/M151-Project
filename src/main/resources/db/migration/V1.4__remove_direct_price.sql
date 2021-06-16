@@ -1,0 +1,1 @@
+ALTER TABLE public.direct_buy DROP COLUMN buy_price;

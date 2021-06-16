@@ -20,8 +20,8 @@ public class DirectBuyController {
     }
 
     @PostMapping("/{id}")
-    public DirectBuy add(@RequestBody final DirectBuy directBuy, @PathVariable final long id) {
-        return directBuyService.add(directBuy, id);
+    public DirectBuy add(@PathVariable final long id) {
+        return directBuyService.add(id);
     }
 
 }
