@@ -18,27 +18,27 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
-@CacheConfig(cacheNames = {"auction"})
+@CacheConfig(cacheNames = {"auctions"})
 public class AuctionService {
     private final AuctionRepo auctionRepo;
     private final CarRepo carRepo;
     private final PriceRepo priceRepo;
     private final UserService userService;
-    private final BidRepo bidRepo;
+    private final BidService bidService;
 
 
     @Autowired
-    public AuctionService(final AuctionRepo auctionRepo, final CarRepo carRepo, final PriceRepo priceRepo, final UserService userService, final BidRepo bidRepo) {
+    public AuctionService(final AuctionRepo auctionRepo, final CarRepo carRepo, final PriceRepo priceRepo, final UserService userService, final BidService bidService) {
         this.auctionRepo = auctionRepo;
         this.carRepo = carRepo;
         this.priceRepo = priceRepo;
         this.userService = userService;
-        this.bidRepo = bidRepo;
+        this.bidService = bidService;
     }
 
     @Transactional
-    //@CachePut(key = "#auction.")
-    @CacheEvict(key = "0")
+    @CachePut(key = "#result.id")
+    @Caching(evict = {@CacheEvict(key = "0"), @CacheEvict(key = "1"), @CacheEvict(key = "2"), @CacheEvict(key = "3"), @CacheEvict(key = "4")})
     public Auction add(final AuctionWithPriceAndCar auctionWithPriceAndCar) {
         final Optional<User> optionalUser = userService.getCurrentUser();
         if (optionalUser.isPresent()) {
@@ -54,7 +54,7 @@ public class AuctionService {
     }
 
     @Transactional
-    @Caching(evict = {@CacheEvict(key = "#id"), @CacheEvict(key = "0")})
+    @Caching(evict = {@CacheEvict(key = "#id"), @CacheEvict(key = "0"), @CacheEvict(key = "1"), @CacheEvict(key = "2"), @CacheEvict(key = "3")})
     public void delete(final long id) {
         auctionRepo.deleteById(id);
     }
@@ -65,7 +65,7 @@ public class AuctionService {
         final Iterable<Auction> auctions = auctionRepo.getOpenAuctions();
         List<AuctionWithHighestBid> auctionsWithHighestBid = new ArrayList<>();
         for (Auction auction: auctions) {
-            final Optional<Bid> highestBid = getHighestBid(auction);
+            final Optional<Bid> highestBid = bidService.getHighestBid(auction);
             AuctionWithHighestBid auctionWithBid;
             if(highestBid.isPresent()){
                 auctionWithBid = new AuctionWithHighestBid(auction,highestBid.get());
@@ -81,6 +81,7 @@ public class AuctionService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(key = "-1")
     public List<Auction> getAllClosed() {
         final Iterable<Auction> auctions = auctionRepo.getClosedAuctions();
         return StreamSupport
@@ -89,6 +90,7 @@ public class AuctionService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(key = "-2")
     public List<Auction> getMyAuctions() {
         final User auctioneer = userService.getCurrentUser().get();
         final Iterable<Auction> auctions = auctionRepo.findByAuctioneer(auctioneer);
@@ -98,6 +100,7 @@ public class AuctionService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(key = "-3")
     public List<Auction> getWonAuctions() {
         final User winner = userService.getCurrentUser().get();
         final Iterable<Auction> auctions = auctionRepo.findByWinner(winner);
@@ -107,16 +110,18 @@ public class AuctionService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(key = "#id", unless = "#result == null")
     public Optional<Auction> getAuctionById(final long id) {
         return auctionRepo.findById(id);    }
 
     @Scheduled(fixedRate = 60000)
     @Transactional
+    @Caching(evict = {@CacheEvict(key = "0"), @CacheEvict(key = "1"), @CacheEvict(key = "2"), @CacheEvict(key = "3")})
     public void closeAuctions(){
         final List<Auction> auctions = auctionRepo.getAllExpiredAuctions();
         final List<Auction> closedAuctions = auctions.stream().map(auction -> {
             auction.setClosed(true);
-            Optional<Bid> optionalHighestBid = getHighestBid(auction);
+            Optional<Bid> optionalHighestBid = bidService.getHighestBid(auction);
             if(optionalHighestBid.isPresent()){
                 Bid highestBid = optionalHighestBid.get();
                 auction.setWinner(highestBid.getBidder());
@@ -124,9 +129,5 @@ public class AuctionService {
             return auction;
         }).collect(Collectors.toList());
         auctionRepo.saveAll(closedAuctions);
-    }
-
-    public Optional<Bid> getHighestBid(Auction auction) {
-        return bidRepo.findFirstByAuctionOrderByBidDesc(auction);
     }
 }

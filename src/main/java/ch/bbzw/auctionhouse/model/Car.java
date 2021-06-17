@@ -1,10 +1,12 @@
 package ch.bbzw.auctionhouse.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-public class Car {
+public class Car implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "car_sequence")
@@ -12,7 +14,7 @@ public class Car {
     @Column(nullable = false, updatable = false)
     private long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private  String name;
 
     @Column(nullable = false)

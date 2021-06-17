@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-@CacheConfig(cacheNames = {"direct"})
+@CacheConfig(cacheNames = {"directs"})
 public class DirectBuyService {
     private final DirectBuyRepo directBuyRepo;
     private final AuctionRepo auctionRepo;

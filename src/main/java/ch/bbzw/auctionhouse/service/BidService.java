@@ -38,7 +38,7 @@ public class BidService {
     }
 
     @Transactional
-    @CachePut(key = "#bid.id")
+    @Cacheable(key = "#bid.id", unless = "#result == null")
     @CacheEvict(key = "0")
     public Bid add(final Bid bid, final long auctionId) {
         final Optional<Auction> optionalAuction = auctionRepo.findById(auctionId);
@@ -71,5 +71,10 @@ public class BidService {
         return StreamSupport
                 .stream(bids.spliterator(), false)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Optional<Bid> getHighestBid(Auction auction) {
+        return bidRepo.findFirstByAuctionOrderByBidDesc(auction);
     }
 }

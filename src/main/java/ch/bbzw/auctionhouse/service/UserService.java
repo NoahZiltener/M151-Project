@@ -43,7 +43,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(key = "0")
+    @Cacheable(key = "all")
     public List<User> getAll() {
         final Iterable<User> users = userRepo.getallNotDeletedUser();
         return StreamSupport

@@ -1,0 +1,1 @@
+ALTER TABLE public.car DROP CONSTRAINT uk_biyf1xj7bo43hek7073jen2l;
