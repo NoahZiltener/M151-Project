@@ -5,6 +5,8 @@ import ch.bbzw.auctionhouse.model.DirectBuy;
 import ch.bbzw.auctionhouse.service.BidService;
 import ch.bbzw.auctionhouse.service.DirectBuyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +22,15 @@ public class DirectBuyController {
     }
 
     @PostMapping("/{id}")
-    public DirectBuy add(@PathVariable final long id) {
-        return directBuyService.add(id);
+    public ResponseEntity add(@PathVariable final long id) {
+        try {
+            final DirectBuy savedDirectBuy = directBuyService.add(id);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(savedDirectBuy);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
     }
 
 }

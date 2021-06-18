@@ -1,14 +1,13 @@
 package ch.bbzw.auctionhouse.service;
 
+import ch.bbzw.auctionhouse.exception.CustomException;
 import ch.bbzw.auctionhouse.model.Auction;
 import ch.bbzw.auctionhouse.model.DirectBuy;
 import ch.bbzw.auctionhouse.model.User;
 import ch.bbzw.auctionhouse.repo.AuctionRepo;
 import ch.bbzw.auctionhouse.repo.DirectBuyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,14 +28,19 @@ public class DirectBuyService {
     }
 
     @Transactional
-    @CachePut(key = "#directBuy.id")
-    @CacheEvict(key = "0")
-    public DirectBuy add(final long auctionId) {
+    @CachePut(key = "#result.id")
+    @Caching(evict = {
+            @CacheEvict(key = "0"),
+            @CacheEvict(cacheNames = "auctions", key = "0"),
+            @CacheEvict(cacheNames = "auctions", key = "1"),
+            @CacheEvict(cacheNames = "auctions", key = "2"),
+            @CacheEvict(cacheNames = "auctions", key = "3")})
+    public DirectBuy add(final long auctionId) throws CustomException {
         final Optional<Auction> optionalAuction = auctionRepo.findById(auctionId);
         if (optionalAuction.isPresent()) {
             final Auction auction = optionalAuction.get();
             if (!auction.isClosed()) {
-                final User user = userService.getCurrentUser().get();
+                final User user = userService.getCurrentUser();
                 DirectBuy directBuy = new DirectBuy(user);
                 final DirectBuy savedDirectBuy = directBuyRepo.save(directBuy);
                 auction.setDirectBuy(savedDirectBuy);
@@ -45,8 +49,11 @@ public class DirectBuyService {
                 auctionRepo.save(auction);
                 return savedDirectBuy;
             }
+            else {
+                throw new CustomException("Auction is Closed");
+            }
         }
-        return null;
+        throw new CustomException("Auction not Found");
     }
 
 }

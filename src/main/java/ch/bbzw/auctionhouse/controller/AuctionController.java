@@ -1,13 +1,12 @@
 package ch.bbzw.auctionhouse.controller;
 
-import ch.bbzw.auctionhouse.dto.AuctionWithBids;
 import ch.bbzw.auctionhouse.dto.AuctionWithHighestBid;
 import ch.bbzw.auctionhouse.dto.AuctionWithPriceAndCar;
 import ch.bbzw.auctionhouse.model.Auction;
-import ch.bbzw.auctionhouse.model.User;
 import ch.bbzw.auctionhouse.service.AuctionService;
-import ch.bbzw.auctionhouse.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,34 +25,52 @@ public class AuctionController {
     }
 
     @GetMapping("/")
-    public List<AuctionWithHighestBid> getAllOpen() {
-        return auctionService.getAllOpen(); }
-
-    @GetMapping("/{id}")
-    public Optional<Auction> getAuctionById(@PathVariable final long id) {
-        return auctionService.getAuctionById(id); }
+    public ResponseEntity<List<AuctionWithHighestBid>> getAllOpen() {
+        return ResponseEntity.ok(auctionService.getAllOpen());
+    }
 
     @GetMapping("/myAuctions")
-    public List<Auction> getMyAuction() {
-        return auctionService.getMyAuctions(); }
+    public ResponseEntity<List<AuctionWithHighestBid>> getMyAuction() {
+        return ResponseEntity.ok(auctionService.getMyAuctions());
+    }
 
     @GetMapping("/history")
-    public List<Auction> getAllClosed() {
-        return auctionService.getAllClosed(); }
+    public ResponseEntity<List<AuctionWithHighestBid>> getAllClosed() {
+        return ResponseEntity.ok(auctionService.getAllClosed());
+    }
 
     @GetMapping("/wonAuctions")
-    public List<Auction> getAllWonAuctions() {
-        return auctionService.getWonAuctions(); }
+    public ResponseEntity<List<AuctionWithHighestBid>> getAllWonAuctions() {
+        return ResponseEntity.ok(auctionService.getWonAuctions());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Auction> getAuctionById(@PathVariable final long id) {
+        final Optional<Auction> optionalAuction = auctionService.getAuctionById(id);
+        if (optionalAuction.isPresent()) {
+            return ResponseEntity.ok(optionalAuction.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @PostMapping("/")
     @PreAuthorize("hasAuthority('AUCTIONEER') or hasAuthority('ADMIN')")
-    public Auction add(@RequestBody final AuctionWithPriceAndCar auctionWithPriceAndCar) {
-        return auctionService.add(auctionWithPriceAndCar);
+    public ResponseEntity add(@RequestBody final AuctionWithPriceAndCar auctionWithPriceAndCar) {
+        try {
+            final Auction auction = auctionService.add(auctionWithPriceAndCar);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(auction);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void delete(@PathVariable final long id) {
+    public ResponseEntity<String> delete(@PathVariable final long id) {
         auctionService.delete(id);
+        return ResponseEntity.ok("Auction deleted");
     }
 }

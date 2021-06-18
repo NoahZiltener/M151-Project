@@ -8,9 +8,14 @@ import java.io.Serializable;
 public class AuctionWithHighestBid implements Serializable {
     private static final long serialVersionUID = 1L;
     private Auction auction;
-    private Bid highesBid;
+    private double highesBid;
 
-    public void setHighesBid(Bid highesBid) {
+    public AuctionWithHighestBid(final Auction auction, final double highesBid) {
+        this.auction = auction;
+        this.highesBid = highesBid;
+    }
+
+    public void setHighesBid(double highesBid) {
         this.highesBid = highesBid;
     }
 
@@ -18,14 +23,8 @@ public class AuctionWithHighestBid implements Serializable {
         return auction;
     }
 
-    public Bid getHighesBid() {
+    public double getHighesBid() {
         return highesBid;
     }
-
-    public AuctionWithHighestBid(final Auction auction, final Bid highesBid) {
-        this.auction = auction;
-        this.highesBid = highesBid;
-    }
-
 
 }

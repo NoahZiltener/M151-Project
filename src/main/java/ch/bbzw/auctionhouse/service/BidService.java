@@ -1,14 +1,12 @@
 package ch.bbzw.auctionhouse.service;
 
+import ch.bbzw.auctionhouse.exception.CustomException;
 import ch.bbzw.auctionhouse.model.Auction;
 import ch.bbzw.auctionhouse.model.Bid;
 import ch.bbzw.auctionhouse.model.User;
 import ch.bbzw.auctionhouse.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,8 +37,13 @@ public class BidService {
 
     @Transactional
     @Cacheable(key = "#bid.id", unless = "#result == null")
-    @CacheEvict(key = "0")
-    public Bid add(final Bid bid, final long auctionId) {
+    @Caching(evict = {
+            @CacheEvict(key = "0"),
+            @CacheEvict(cacheNames = "auctions", key = "0"),
+            @CacheEvict(cacheNames = "auctions", key = "1"),
+            @CacheEvict(cacheNames = "auctions", key = "2"),
+            @CacheEvict(cacheNames = "auctions", key = "3")})
+    public Bid add(final Bid bid, final long auctionId) throws CustomException {
         final Optional<Auction> optionalAuction = auctionRepo.findById(auctionId);
         if (optionalAuction.isPresent()) {
             final Auction auction = optionalAuction.get();
@@ -48,25 +51,33 @@ public class BidService {
                 Optional<Bid> optionalHighestBid = bidRepo.findFirstByAuctionOrderByBidDesc(auction);
                 if(optionalHighestBid.isPresent()){
                     Bid highestBid = optionalHighestBid.get();
-                    if(highestBid.getBid() > bid.getBid()){
-                        return null;
+                    if(highestBid.getBid() >= bid.getBid()){
+                        throw new CustomException("Bid is to lower then highest bid");
                     }
                 }
                 if(auction.getPrice().getStartingBid() <= bid.getBid()){
-                    final User user = userService.getCurrentUser().get();
+                    final User user = userService.getCurrentUser();
                     bid.setAuction(auction);
                     bid.setBidder(user);
                     return bidRepo.save(bid);
                 }
+                else {
+                    throw new CustomException("Bid is to lower then start bid");
+                }
+            }
+            else {
+                throw new CustomException("Auction is Closed");
             }
         }
-        return null;
+        else {
+            throw new CustomException("Auction not Found");
+        }
     }
 
     @Transactional(readOnly = true)
     @Cacheable(key = "0")
     public List<Bid> getAll() {
-        final User user = userService.getCurrentUser().get();
+        final User user = userService.getCurrentUser();
         final Iterable<Bid> bids = bidRepo.findByBidder(user);
         return StreamSupport
                 .stream(bids.spliterator(), false)

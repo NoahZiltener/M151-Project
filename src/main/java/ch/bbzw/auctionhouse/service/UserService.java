@@ -70,9 +70,9 @@ public class UserService {
     }
 
     @Transactional
-    public Optional<User> getCurrentUser(){
+    public User getCurrentUser(){
         final SecurityContext context = SecurityContextHolder.getContext();
         final Optional<User> optionalUser = userRepo.findByUsername(context.getAuthentication().getName());
-        return optionalUser;
+        return optionalUser.get();
     }
 }
