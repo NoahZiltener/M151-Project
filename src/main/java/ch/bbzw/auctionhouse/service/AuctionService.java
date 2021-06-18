@@ -13,11 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 @CacheConfig(cacheNames = {"auctions"})
@@ -54,17 +52,6 @@ public class AuctionService {
         Price price = priceRepo.save(auctionWithPriceAndCar.getPrice());
         Auction auction = new Auction(price, car, user, null, false, LocalDateTime.now().plusMinutes(5));
         return auctionRepo.save(auction);
-    }
-
-    @Transactional
-    @Caching(evict = {
-            @CacheEvict(key = "#id"),
-            @CacheEvict(key = "0"),
-            @CacheEvict(key = "-1"),
-            @CacheEvict(key = "-2"),
-            @CacheEvict(key = "-3")})
-    public void delete(final long id) {
-        auctionRepo.deleteById(id);
     }
 
     @Transactional(readOnly = true)
@@ -105,11 +92,7 @@ public class AuctionService {
 
     @Scheduled(fixedRate = 60000)
     @Transactional
-    @Caching(evict = {
-            @CacheEvict(key = "0"),
-            @CacheEvict(key = "1"),
-            @CacheEvict(key = "2"),
-            @CacheEvict(key = "3")})
+    @CacheEvict(allEntries = true)
     public void closeAuctions() {
         final List<Auction> auctions = auctionRepo.getAllExpiredAuctions();
         final List<Auction> closedAuctions = auctions.stream().peek(auction -> {
@@ -123,6 +106,7 @@ public class AuctionService {
         auctionRepo.saveAll(closedAuctions);
     }
 
+    @Transactional
     public List<AuctionWithHighestBid> getAuctionWithHighestBid(List<Auction> auctions){
         return auctions.stream().map(auction -> {
             double highestBid = 0;

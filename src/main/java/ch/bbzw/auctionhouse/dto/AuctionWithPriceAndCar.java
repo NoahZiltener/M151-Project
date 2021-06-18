@@ -7,7 +7,7 @@ public class AuctionWithPriceAndCar {
     private final Car car;
     private final Price price;
 
-    public AuctionWithPriceAndCar(final Long auctioneerId, final Car car, final Price price) {
+    public AuctionWithPriceAndCar(final Car car, final Price price) {
         this.car = car;
         this.price = price;
     }

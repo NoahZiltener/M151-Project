@@ -32,9 +32,9 @@ public class DirectBuyService {
     @Caching(evict = {
             @CacheEvict(key = "0"),
             @CacheEvict(cacheNames = "auctions", key = "0"),
-            @CacheEvict(cacheNames = "auctions", key = "1"),
-            @CacheEvict(cacheNames = "auctions", key = "2"),
-            @CacheEvict(cacheNames = "auctions", key = "3")})
+            @CacheEvict(cacheNames = "auctions", key = "-1"),
+            @CacheEvict(cacheNames = "auctions", key = "-2"),
+            @CacheEvict(cacheNames = "auctions", key = "-3")})
     public DirectBuy add(final long auctionId) throws CustomException {
         final Optional<Auction> optionalAuction = auctionRepo.findById(auctionId);
         if (optionalAuction.isPresent()) {

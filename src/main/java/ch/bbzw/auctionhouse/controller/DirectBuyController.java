@@ -1,8 +1,6 @@
 package ch.bbzw.auctionhouse.controller;
 
-import ch.bbzw.auctionhouse.model.Bid;
 import ch.bbzw.auctionhouse.model.DirectBuy;
-import ch.bbzw.auctionhouse.service.BidService;
 import ch.bbzw.auctionhouse.service.DirectBuyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

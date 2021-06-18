@@ -1,7 +1,6 @@
 package ch.bbzw.auctionhouse.dto;
 
 import ch.bbzw.auctionhouse.model.Auction;
-import ch.bbzw.auctionhouse.model.Bid;
 
 import java.io.Serializable;
 

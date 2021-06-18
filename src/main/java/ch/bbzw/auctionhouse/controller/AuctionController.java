@@ -66,11 +66,4 @@ public class AuctionController {
                     .body(e.getMessage());
         }
     }
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<String> delete(@PathVariable final long id) {
-        auctionService.delete(id);
-        return ResponseEntity.ok("Auction deleted");
-    }
 }
