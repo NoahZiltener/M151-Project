@@ -36,7 +36,3 @@ flyway {
 	password = db_password
 }
 
-test {
-	useJUnitPlatform()
-}
-

@@ -1,5 +1,6 @@
 package ch.bbzw.auctionhouse.service;
 
+import ch.bbzw.auctionhouse.exception.CustomException;
 import ch.bbzw.auctionhouse.model.User;
 import ch.bbzw.auctionhouse.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(key = "all")
+    @Cacheable(key = "0")
     public List<User> getAll() {
         final Iterable<User> users = userRepo.getallNotDeletedUser();
         return StreamSupport
@@ -53,7 +54,7 @@ public class UserService {
 
     @Transactional
     @Caching(evict = {@CacheEvict(key = "#id"), @CacheEvict(key = "0")})
-    public Optional<User> update(final long id, final User user) {
+    public User update(final long id, final User user) throws CustomException {
         final Optional<User> optionalUser = userRepo.findById(id);
         if (optionalUser.isPresent()) {
             User foundUser = optionalUser.get();
@@ -61,9 +62,11 @@ public class UserService {
             foundUser.setLastname(user.getLastname());
             foundUser.setUsername(user.getUsername());
             foundUser.setUserGroup(user.getUserGroup());
-            return Optional.of(userRepo.save(foundUser));
+            return userRepo.save(foundUser);
         }
-        return Optional.empty();
+        else {
+            throw new CustomException("User not Found");
+        }
     }
 
     @Transactional

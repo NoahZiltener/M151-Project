@@ -22,7 +22,6 @@ public class AuctionWithHighestBid implements Serializable {
         return highesBid;
     }
 
-
     public AuctionWithHighestBid(final Auction auction, final Bid highesBid) {
         this.auction = auction;
         this.highesBid = highesBid;

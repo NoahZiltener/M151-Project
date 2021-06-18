@@ -13,7 +13,5 @@ import java.util.Optional;
 public interface BidRepo extends CrudRepository<Bid, Long> {
     List<Bid> findByBidder(User bidder);
 
-    List<Bid> findByAuction(Auction auction);
-
     Optional<Bid> findFirstByAuctionOrderByBidDesc(Auction auction);
 }
